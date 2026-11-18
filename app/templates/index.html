@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}量化回测控制台 - 金融数据智能分析平台{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+
+
+
+    <aside class="sidebar">
+        <h2 class="sys-title">量化回测控制台</h2>
+        <form id="backtest-form">
+
+            <div class="form-section">
+                <h3>分析标的与预测周期</h3>
+                <div class="form-group-row">
+                    <div class="form-group half">
+                        <label>目标股票</label>
+                        <select id="target_code">
+                            <option value="ALL" selected>全市场 (ALL)</option>
+                            <option value="sh.601318">中国平安 (大金融)</option>
+                            <option value="sh.600036">招商银行 (大金融)</option>
+                            <option value="sh.600030">中信证券 (大金融)</option>
+                            <option value="sz.300059">东方财富 (大金融)</option>
+                            <option value="sh.601398">工商银行 (大金融)</option>
+                            <option value="sh.688981">中芯国际 (硬科技)</option>
+                            <option value="sz.002371">北方华创 (硬科技)</option>
+                            <option value="sz.002415">海康威视 (硬科技)</option>
+                            <option value="sz.002475">立讯精密 (硬科技)</option>
+                            <option value="sz.002230">科大讯飞 (硬科技)</option>
+                            <option value="sz.300750">宁德时代 (新能源)</option>
+                            <option value="sz.002594">比亚迪 (新能源)</option>
+                            <option value="sh.601012">隆基绿能 (新能源)</option>
+                            <option value="sz.300274">阳光电源 (新能源)</option>
+                            <option value="sz.300124">汇川技术 (新能源)</option>
+                            <option value="sh.600519">贵州茅台 (大消费)</option>
+                            <option value="sz.000858">五粮液 (大消费)</option>
+                            <option value="sh.600887">伊利股份 (大消费)</option>
+                            <option value="sz.000333">美的集团 (大消费)</option>
+                            <option value="sh.600276">恒瑞医药 (大消费)</option>
+                        </select>
+                    </div>
+                    <div class="form-group half">
+                        <label>预测周期</label>
+                        <select id="predict_window">
+                            <option value="1d">未来 1 日</option>
+                            <option value="5d" selected>未来 5 日</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 12px;">
+                    <label>标签打标方式(对照实验)</label>
+                    <select id="label_type">
+                        <option value="cs" selected>横截面相对强弱(推荐)</option>
+                        <option value="abs">绝对涨跌幅阈值(易失衡)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+    <h3>特征消融实验 (动态装配)</h3>
+    <div class="checkbox-grid">
+        <label class="checkbox-item disabled">
+            <input type="checkbox" id="feat_base" checked disabled>
+            <span>📊 基础指标 <span style="font-size: 0.8rem; color: #bdc3c7;">(必选)</span></span>
+        </label>
+        <label class="checkbox-item">
+            <input type="checkbox" id="feat_factor" checked>
+            <span>🚀 增强因子</span>
+        </label>
+        <label class="checkbox-item">
+            <input type="checkbox" id="feat_lag">
+            <span>⏳ 时序记忆</span>
+        </label>
+        <label class="checkbox-item">
+            <input type="checkbox" id="feat_industry">
+            <span>🏢 行业板块</span>
+        </label>
+    </div>
+</div>
+
+            <div class="form-section">
+                <h3>算法核心引擎</h3>
+                <div class="form-group">
+                    <label>预测模型选择</label>
+                    <select id="model_name">
+                        <option value="XGBoost_Enhanced" selected>XGBoost</option>
+                        <option value="SVM_GridSearch">SVM</option>
+                        <option value="BP_NeuralNetwork">BP神经网络</option>
+                        <option value="Logistic_Regression">逻辑回归</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>回测区间设置</h3>
+                <div class="form-group-row">
+                    <div class="form-group half">
+                        <label>训练集起</label>
+                        <input type="date" id="train_start" value="2022-01-01">
+                    </div>
+                    <div class="form-group half">
+                        <label>训练集止</label>
+                        <input type="date" id="train_end" value="2023-12-31">
+                    </div>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group half">
+                        <label>测试集起</label>
+                        <input type="date" id="test_start" value="2024-01-01">
+                    </div>
+                    <div class="form-group half">
+                        <label>测试集止</label>
+                        <input type="date" id="test_end" value="2024-12-31">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>风控与摩擦成本</h3>
+                <div class="form-group-row">
+                    <div class="form-group half">
+                        <label>初始本金 (元)</label>
+                        <input type="number" id="initial_capital" value="100000" step="10000">
+                    </div>
+                </div>
+
+
+
+                <div class="form-group-row">
+                    <div class="form-group half">
+                        <label>止盈比例 (%)</label>
+                        <input type="number" id="take_profit" placeholder="5d模型建议留空">
+                    </div>
+                    <div class="form-group half">
+                        <label>止损比例 (%)</label>
+                        <input type="number" id="stop_loss" placeholder="5d模型建议留空">
+                    </div>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group half">
+                        <label>买入阈值</label>
+                        <input type="number" id="buy_threshold" value="0.55" step="0.01">
+                    </div>
+                    <div class="form-group half">
+                        <label>卖出阈值</label>
+                        <input type="number" id="sell_threshold" value="0.45" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="run-btn" class="primary-btn">▶ 启动策略回测</button>
+            <button type="button" id="eval-regime-btn" class="primary-btn" style="background-color: #9b59b6; margin-top: 15px; box-shadow: 0 4px 6px rgba(155, 89, 182, 0.3);">
+                不同市场行情下模型效果
+            </button>
+        </form>
+    </aside>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <main class="main-content">
+        <div class="metrics-panel">
+            <div class="metric-card">
+                <h4>策略总收益</h4>
+                <span id="metric-return" class="value">--</span>
+            </div>
+            <div class="metric-card">
+                <h4>超额收益 (Alpha)</h4>
+                <span id="metric-alpha" class="value">--</span>
+            </div>
+            <div class="metric-card">
+                <h4>最大回撤</h4>
+                <span id="metric-drawdown" class="value">--</span>
+            </div>
+            <div class="metric-card">
+                <h4>夏普比率</h4>
+                <span id="metric-sharpe" class="value">--</span>
+            </div>
+        </div>
+
+        <div class="metrics-panel" style="margin-top: 15px;">
+            <div class="metric-card" style="border-left-color: #9b59b6;">
+                <h4>准确率 (Accuracy)</h4>
+                <span id="metric-acc" class="value">--</span>
+            </div>
+            <div class="metric-card" style="border-left-color: #9b59b6;">
+                <h4>精确率 (Precision)</h4>
+                <span id="metric-prec" class="value">--</span>
+            </div>
+            <div class="metric-card" style="border-left-color: #9b59b6;">
+                <h4>召回率 (Recall)</h4>
+                <span id="metric-rec" class="value">--</span>
+            </div>
+            <div class="metric-card" style="border-left-color: #9b59b6;">
+                <h4>F1 分数</h4>
+                <span id="metric-f1" class="value">--</span>
+            </div>
+            <div class="metric-card" style="border-left-color: #9b59b6;">
+                <h4>区分度 (AUC)</h4>
+                <span id="metric-auc" class="value">--</span>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+        <div class="charts-area">
+            <div class="chart-box full-width">
+                <h3 class="chart-title">个股历史走势与技术指标</h3>
+                <div id="chart-kline" style="height: 350px; width: 100%;"></div>
+            </div>
+
+            <div class="charts-grid-half">
+                <div class="chart-box">
+                    <h3 class="chart-title">多模型评估指标对比</h3>
+                    <div id="chart-models" style="height: 300px; width: 100%;"></div>
+                </div>
+                <div class="chart-box">
+                    <h3 class="chart-title">测试集预测混淆矩阵</h3>
+                    <div id="chart-matrix" style="height: 300px; width: 100%;"></div>
+                </div>
+            </div>
+
+            <div class="chart-box full-width">
+                <h3 class="chart-title">策略累计收益率回测对比</h3>
+                <div id="chart-returns" style="height: 400px; width: 100%;"></div>
+            </div>
+        </div>
+    </main>
+
+    <div id="regime-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 多模型大盘行情交叉体检报告</h2>
+                <span class="close-btn" id="close-modal-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p style="color: #7f8c8d; margin-bottom: 15px;">系统已自动对测试集执行时序折叠切片，并根据沪深300指数区间涨跌幅打标行情。数据已同步落盘至本地output文件夹</p>
+                <div id="chart-regime" style="height: 400px; width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

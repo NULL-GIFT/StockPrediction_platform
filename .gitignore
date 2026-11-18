@@ -1,0 +1,22 @@
+.idea/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.log
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+# Local market data, serialized models and generated results
+/data/
+/output/
+/scripts/data/
+# Coursework report contains personal identifiers; keep locally
+/report/
+# Original dependency file has a leading space; publish the standard filename
+/ requirements.txt
+.DS_Store
+Thumbs.db
